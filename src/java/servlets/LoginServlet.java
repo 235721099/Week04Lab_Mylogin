@@ -22,17 +22,21 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         
-        String logout = request.getParameter("logout");
-        
-        if(logout != null){
+        String logout = (String) session.getAttribute("logout");
+        try{
+            if(logout.equals("logout")){
             session.invalidate();
             session = request.getSession();
             String message = "You have successfully logged out";
             request.setAttribute("message", message);
-        }
-        
-        getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
+            getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
                     .forward(request, response);
+            }
+        }catch(Exception e){
+            response.sendRedirect("home");
+        }
+
+        
     }
 
     @Override
@@ -48,21 +52,22 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("message", message);
             getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
                     .forward(request, response);
+            return;
         }else{
             User user = AccountService.login(username, password);
-            //session.setAttribute("user", user);
             if(user == null){
-                String message = "Invild user";
+                String message = "Invalid login";
                 request.setAttribute("message", message);
                 getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
                     .forward(request, response);
-            }else{
-                session.setAttribute("user", user);
-                //String message = user.getUsername();
-                //request.setAttribute("message", message);
-                getServletContext().getRequestDispatcher("/WEB-INF/home.jsp")
-                    .forward(request, response);
+                return;
             }
+            
+            session.setAttribute("user", user);
+            /*getServletContext().getRequestDispatcher("/WEB-INF/home.jsp")
+                    .forward(request, response);*/
+            response.sendRedirect("home");
+            
         }
         
                 

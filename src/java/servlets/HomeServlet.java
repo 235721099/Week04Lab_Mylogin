@@ -21,23 +21,35 @@ public class HomeServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User u = (User) session.getAttribute("user");
-        //session.getAttribute("user");
+               
         if(u == null){
             getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
                     .forward(request, response);
+            return;
         }else{
-            //String name = u.getUsername();
-            //request.setAttribute("name", name);
-            getServletContext().getRequestDispatcher("/WEB-INF/home.jsp")
+            request.setAttribute("u", u);
+            String logout = request.getParameter("logout");
+                    
+            try{
+                if(logout.equals("logout")){
+                    session.setAttribute("logout", logout);
+                    /*getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
+                        .forward(request, response);*/
+                    response.sendRedirect("login");
+                }
+            }catch(Exception e){
+                getServletContext().getRequestDispatcher("/WEB-INF/home.jsp")
                     .forward(request, response);
+            }
+          
         }
-        
+   
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
 }
