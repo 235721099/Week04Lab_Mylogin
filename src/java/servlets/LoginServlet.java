@@ -48,7 +48,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("user_pass");
         
         if(username.trim().equals("") || password.trim().equals("")){
-            String message = "Invild information";
+            String message = "Invalid information";
             request.setAttribute("message", message);
             getServletContext().getRequestDispatcher("/WEB-INF/login.jsp")
                     .forward(request, response);
@@ -69,10 +69,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("home");
             
         }
-        
-                
-                
-        
+
     }
 
 }
